@@ -19,7 +19,13 @@ jobs:
         shell: pwsh
         run: if (-not (Test-Path wineyes.exe)) { throw "wineyes.exe was not built" }
 
+      - name: Build installer
+        shell: pwsh
+        run: ./installer.ps1
+
       - uses: actions/upload-artifact@v4
         with:
           name: wineyes
-          path: wineyes.exe
+          path: |
+            wineyes.exe
+            dist/*.exe
