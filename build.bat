@@ -11,4 +11,5 @@ if not defined VSDIR (
 )
 call "%VSDIR%\VC\Auxiliary\Build\vcvars64.bat" >nul 2>nul
 :build
-cl /nologo /O2 /W4 /EHsc /DUNICODE /D_UNICODE wineyes.cpp /link /SUBSYSTEM:WINDOWS
+rc /nologo wineyes.rc || exit /b 1
+cl /nologo /O2 /W4 /EHsc /DUNICODE /D_UNICODE wineyes.cpp wineyes.res /link /SUBSYSTEM:WINDOWS
