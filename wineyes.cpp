@@ -199,35 +199,6 @@ static void UpdateMonitor(HWND hwnd, bool force)
     }
 }
 
-static HICON MakeIcon(int size)
-{
-    // Eyes looking slightly down-right, centred in a square icon.
-    const int h = size * 2 / 3;
-    BITMAPINFO bi = {};
-    bi.bmiHeader.biSize = sizeof(bi.bmiHeader);
-    bi.bmiHeader.biWidth = size;
-    bi.bmiHeader.biHeight = -size;
-    bi.bmiHeader.biPlanes = 1;
-    bi.bmiHeader.biBitCount = 32;
-    bi.bmiHeader.biCompression = BI_RGB;
-    void* bits = nullptr;
-    HBITMAP color = CreateDIBSection(nullptr, &bi, DIB_RGB_COLORS, &bits, nullptr, 0);
-    if (!color) return nullptr;
-    ZeroMemory(bits, (size_t)size * size * 4);
-    {
-        Bitmap canvas(size, size, size * 4, PixelFormat32bppPARGB, (BYTE*)bits);
-        Graphics gr(&canvas);
-        const REAL oy = (REAL)(size - h) / 2;
-        DrawEyes(gr, 0, oy, (REAL)size, (REAL)h, PointF((REAL)size * 2, (REAL)size * 2));
-    }
-    HBITMAP mask = CreateBitmap(size, size, 1, 1, nullptr);
-    ICONINFO ii = { TRUE, 0, 0, mask, color };
-    HICON icon = CreateIconIndirect(&ii);
-    DeleteObject(mask);
-    DeleteObject(color);
-    return icon;
-}
-
 static void ShowMenu(HWND hwnd, POINT pt)
 {
     HMENU menu = CreatePopupMenu();
@@ -329,8 +300,11 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int show)
     ULONG_PTR gdipToken = 0;
     if (GdiplusStartup(&gdipToken, &gsi, nullptr) != Ok) return 1;
 
-    HICON bigIcon = MakeIcon(GetSystemMetrics(SM_CXICON));
-    HICON smallIcon = MakeIcon(GetSystemMetrics(SM_CXSMICON));
+    // Icon resource 1 (wineyes.ico, via wineyes.rc).
+    HICON bigIcon = (HICON)LoadImageW(inst, MAKEINTRESOURCEW(1), IMAGE_ICON,
+                                      GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), LR_SHARED);
+    HICON smallIcon = (HICON)LoadImageW(inst, MAKEINTRESOURCEW(1), IMAGE_ICON,
+                                        GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_SHARED);
 
     WNDCLASSEXW wc = { sizeof(wc) };
     wc.lpfnWndProc = WndProc;
@@ -367,8 +341,6 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE, PWSTR, int show)
         DispatchMessageW(&m);
     }
 
-    DestroyIcon(bigIcon);
-    DestroyIcon(smallIcon);
     GdiplusShutdown(gdipToken);
     return (int)m.wParam;
 }
