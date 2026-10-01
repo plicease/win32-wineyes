@@ -3,6 +3,8 @@
 A Win32 clone of the classic X11 `xeyes`: a pair of eyes that sit on your
 desktop and follow the mouse cursor wherever it goes.
 
+<p align="center"><img src="docs/screenshot.png" alt="wineyes looking down and to the left" width="240"></p>
+
 - Eyes track the cursor anywhere on the screen, across all monitors.
 - Only the eyes are drawn; everything around them is transparent and
   click-through.
