@@ -1,5 +1,7 @@
 // wineyes - a Win32 clone of the classic X11 xeyes.
 //
+// Copyright (c) 2026 Graham Ollis. Licensed under the MIT License; see LICENSE.
+//
 // The window is a borderless per-pixel-alpha layered window: everything
 // outside the eyes is fully transparent (and click-through), the eyes are
 // drawn anti-aliased with GDI+ and the pupils follow the mouse cursor
